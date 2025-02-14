@@ -1,0 +1,15 @@
+.task-item {
+    transition: background-color 0.3s ease-in-out;
+}
+.task-item:hover {
+    background-color: #f8f9fa;
+}
+.high-priority {
+    border-left: 5px solid red;
+}
+.medium-priority {
+    border-left: 5px solid orange;
+}
+.low-priority {
+    border-left: 5px solid green;
+}
