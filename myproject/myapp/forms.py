@@ -14,3 +14,10 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'completed', 'due_date', 'priority']
+
+    # Ensure priority has a default value
+    def clean_priority(self):
+        priority = self.cleaned_data.get('priority', 'Medium')  # Default to 'Medium'
+        if not priority:
+            return 'Medium'
+        return priority

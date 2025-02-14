@@ -11,14 +11,27 @@
 
     <form method="POST">
         {% csrf_token %}
+        
         <div class="mb-3">
             <label for="id_title" class="form-label">Task Title</label>
             {{ form.title }}
         </div>
+        
+        <div class="mb-3">
+            <label for="id_due_date" class="form-label">Due Date</label>
+            {{ form.due_date }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_priority" class="form-label">Priority</label>
+            {{ form.priority }}  <!-- Ensure this field is rendered -->
+        </div>
+
         <div class="form-check mb-3">
             {{ form.completed }}
             <label class="form-check-label" for="id_completed">Completed</label>
         </div>
+
         <button type="submit" class="btn btn-success">Save Changes</button>
         <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
     </form>
