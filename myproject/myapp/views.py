@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
@@ -7,8 +7,6 @@ from .models import Task
 from .forms import TaskForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
 
 
 def register_user(request):
@@ -81,3 +79,25 @@ def delete_task(request, task_id):
 
     task.delete()
     return redirect('home')
+
+@login_required
+def dashboard(request):
+    tasks = Task.objects.filter(user=request.user)
+
+    # Filtering logic
+    priority = request.GET.get('priority')
+    status = request.GET.get('status')
+    due_date = request.GET.get('due_date')
+
+    if priority:
+        tasks = tasks.filter(priority=priority)
+
+    if status == 'completed':
+        tasks = tasks.filter(completed=True)
+    elif status == 'pending':
+        tasks = tasks.filter(completed=False)
+
+    if due_date:
+        tasks = tasks.filter(due_date=due_date)
+
+    return render(request, 'dashboard.html', {'tasks': tasks})

@@ -6,6 +6,11 @@
 <div class="card shadow-lg p-4">
     <h1 class="text-center text-primary">Your Tasks</h1>
 
+    <!-- Go to Dashboard Button -->
+    <div class="text-end mb-3">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">Go to Dashboard</a>
+    </div>
+
     <!-- Task Form -->
     <form method="POST" class="mb-4">
         {% csrf_token %}
