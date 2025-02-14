@@ -1,14 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Task List</h1>
-    <ul>
+<body class="container mt-5">
+    <h1 class="mb-4">Task List</h1>
+
+    <!-- Form for adding a new task -->
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_title" class="form-label">Task Title</label>
+            {{ form.title }}
+        </div>
+        <div class="form-check mb-3">
+            {{ form.completed }}
+            <label class="form-check-label" for="id_completed">Completed</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Task</button>
+    </form>
+
+    <!-- Display validation errors -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field|capfirst }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Task list -->
+    <ul class="list-group">
         {% for task in tasks %}
-            <li>{{ task.title }} - {% if task.completed %}Done{% else %}Pending{% endif %}</li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ task.title }} 
+                <span class="badge bg-{% if task.completed %}success{% else %}warning{% endif %}">
+                    {% if task.completed %} Done {% else %} Pending {% endif %}
+                </span>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted">No tasks available.</li>
         {% endfor %}
     </ul>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
