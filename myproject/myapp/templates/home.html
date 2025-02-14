@@ -3,54 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
+    <title>Task Manager</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body class="container mt-5">
-    <h1 class="mb-4">Task List</h1>
-
-    <!-- Form for adding a new task -->
-    <form method="POST" class="mb-4">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="id_title" class="form-label">Task Title</label>
-            {{ form.title }}
-        </div>
-        <div class="form-check mb-3">
-            {{ form.completed }}
-            <label class="form-check-label" for="id_completed">Completed</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Task</button>
-    </form>
-
-    <!-- Display validation errors -->
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            <ul>
-                {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                        <li>{{ field|capfirst }}: {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-
-    <!-- Task list -->
-    <ul class="list-group">
-        {% for task in tasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ task.title }} 
-                <span class="badge bg-{% if task.completed %}success{% else %}warning{% endif %}">
-                    {% if task.completed %} Done {% else %} Pending {% endif %}
-                </span>
-            </li>
-        {% empty %}
-            <li class="list-group-item text-muted">No tasks available.</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Bootstrap JS (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow-lg p-4">
+            <h1 class="text-center mb-4 text-primary">Task Manager</h1>
+
+            <!-- Task Form -->
+            <form method="POST" class="mb-4">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="title" class="form-control" placeholder="Enter task title..." required>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <input type="checkbox" name="completed" class="form-check-input me-2" id="completed">
+                        <label for="completed" class="form-check-label">Completed</label>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Add Task</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Display validation errors -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field|capfirst }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <!-- Task List -->
+            <div class="mt-3">
+                <h4 class="text-secondary">Your Tasks</h4>
+                <ul class="list-group">
+                    {% for task in tasks %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="{% if task.completed %}text-success text-decoration-line-through{% endif %}">
+                                    {{ task.title }}
+                                </span>
+                            </div>
+                            <div>
+                                <a href="{% url 'edit_task' task.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ task.id }})">Delete</button>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted text-center">No tasks available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Script -->
+    <script>
+        function confirmDelete(taskId) {
+            if (confirm("Are you sure you want to delete this task?")) {
+                window.location.href = `/delete/${taskId}/`;
+            }
+        }
+    </script>
 </body>
 </html>
